@@ -101,8 +101,19 @@ export class AuthClient {
     },
 
     signUp: async (data: TSignUpSchema) => {
-      const response = await this.client['email-password']['signup'].$post({ json: data });
-      await this.handleError(response);
+      try {
+        console.log('Signing up with data:', JSON.stringify(data, null, 2));
+        console.log('API URL:', `${NEXT_PUBLIC_WEBAPP_URL()}/api/auth/email-password/signup`);
+        
+        const response = await this.client['email-password']['signup'].$post({ json: data });
+        
+        console.log('Signup response status:', response.status);
+        
+        await this.handleError(response);
+      } catch (error) {
+        console.error('Signup error:', error);
+        throw error;
+      }
     },
 
     resendVerifyEmail: async (data: TResendVerifyEmailSchema) => {

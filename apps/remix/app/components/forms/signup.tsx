@@ -122,6 +122,8 @@ export const SignUpForm = ({
 
   const onFormSubmit = async ({ name, email, password, signature, url }: TSignUpFormSchema) => {
     try {
+      console.log('Submitting signup form with values:', { name, email, password: '***', signature: '***', url });
+      
       await authClient.emailPassword.signUp({
         name,
         email,
@@ -146,7 +148,10 @@ export const SignUpForm = ({
         custom_campaign_params: { src: utmSrc },
       });
     } catch (err) {
+      console.error('Signup error details:', err);
+      
       const error = AppError.parseError(err);
+      console.log('Parsed error:', error);
 
       const errorMessage = signupErrorMessages[error.code] ?? signupErrorMessages.INVALID_REQUEST;
 

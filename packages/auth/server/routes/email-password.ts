@@ -142,30 +142,41 @@ export const emailPasswordRoute = new Hono<HonoAuthContext>()
    * Signup endpoint.
    */
   .post('/signup', sValidator('json', ZSignUpSchema), async (c) => {
+    console.log('Signup endpoint called');
+    
     if (env('NEXT_PUBLIC_DISABLE_SIGNUP') === 'true') {
+      console.log('Signup disabled by environment variable');
       throw new AppError('SIGNUP_DISABLED', {
         message: 'Signups are disabled.',
       });
     }
 
     const { name, email, password, signature, url } = c.req.valid('json');
+    console.log('Received signup data for:', { email, name, hasUrl: !!url, hasSignature: !!signature });
 
     if (IS_BILLING_ENABLED() && url && url.length < 6) {
+      console.log('Premium URL rejected - too short:', url);
       throw new AppError('PREMIUM_PROFILE_URL', {
         message: 'Only subscribers can have a username shorter than 6 characters',
       });
     }
 
-    const user = await createUser({ name, email, password, signature, url });
+    try {
+      const user = await createUser({ name, email, password, signature, url });
+      console.log('User created successfully with ID:', user.id);
 
-    await jobsClient.triggerJob({
-      name: 'send.signup.confirmation.email',
-      payload: {
-        email: user.email,
-      },
-    });
+      await jobsClient.triggerJob({
+        name: 'send.signup.confirmation.email',
+        payload: {
+          email: user.email,
+        },
+      });
 
-    return c.text('OK', 201);
+      return c.text('OK', 201);
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
   })
   /**
    * Update password endpoint.
