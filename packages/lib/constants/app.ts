@@ -5,10 +5,13 @@ export const APP_DOCUMENT_UPLOAD_SIZE_LIMIT =
 
 export const NEXT_PUBLIC_WEBAPP_URL = () => {
   const url = env('NEXT_PUBLIC_WEBAPP_URL');
-
-  console.log('NEXT_PUBLIC_WEBAPP_URL called, returning:', url || 'http://localhost:3000');
   
-  return url || 'http://localhost:3000';
+  // Remove trailing slash if present
+  const cleanUrl = url ? url.replace(/\/$/, '') : 'http://localhost:3000';
+  
+  console.log('NEXT_PUBLIC_WEBAPP_URL called, returning:', cleanUrl);
+  
+  return cleanUrl;
 };
 
 export const NEXT_PRIVATE_INTERNAL_WEBAPP_URL =
