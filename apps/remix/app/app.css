@@ -22,3 +22,38 @@
     --font-signature: 'Caveat';
   }
 }
+
+/* Remove borders from input fields in the signer UI */
+.field--FieldRootContainer input,
+.field--FieldRootContainer textarea {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  ring: 0 !important;
+}
+
+/* Remove borders from all form inputs in the document signing experience */
+[id^='document-signing'] input,
+[id^='document-signing'] textarea,
+[class*='document-signing'] input,
+[class*='document-signing'] textarea,
+.DialogContent input,
+.DialogContent textarea {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  ring: 0 !important;
+}
+
+/* Additional selectors for specific components */
+.document-signing-form input,
+.document-signing-form textarea,
+form[id*='signing'] input,
+form[id*='signing'] textarea,
+div[class*='signing'] input,
+div[class*='signing'] textarea {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  ring: 0 !important;
+}
