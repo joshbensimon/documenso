@@ -10,13 +10,14 @@ export default function Layout() {
             autoPlay 
             loop 
             muted 
+            playsInline
             className="absolute h-full w-full object-cover"
           >
-            <source src="https://diploma-sante.fr/app/uploads/2025/05/VF_VIDEO_HOMEPAGE_HORIZONTALE.mp4" type="video/mp4" />
+            <source src="/videos/homepage-background.mp4" type="video/mp4" />
           </video>
           
-          {/* Background overlay */}
-          <div className="absolute inset-0 has-background-color has-background-dim bg-white text-dark has-background-dim-80"></div>
+          {/* Background overlay - with lower opacity */}
+          <div className="absolute inset-0 bg-white bg-opacity-40"></div>
           
           {/* SVG overlay */}
           <svg className="svg-hero pointer-events-none absolute z-10 -top-[5rem] left-1/4 -rotate-[15deg]" width="2302" height="3119" fill="none" xmlns="http://www.w3.org/2000/svg">
