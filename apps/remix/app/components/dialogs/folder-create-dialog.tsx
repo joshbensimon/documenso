@@ -87,8 +87,8 @@ export const CreateFolderDialog = ({ trigger, ...props }: CreateFolderDialogProp
 
       if (error.code === AppErrorCode.ALREADY_EXISTS) {
         toast({
-          title: 'Failed to create folder',
-          description: _(msg`This folder name is already taken.`),
+          title: 'Erreur lors de la création du dossier',
+          description: _(msg`Ce nom de dossier est déjà pris.`),
           variant: 'destructive',
         });
 
@@ -96,8 +96,8 @@ export const CreateFolderDialog = ({ trigger, ...props }: CreateFolderDialogProp
       }
 
       toast({
-        title: 'Failed to create folder',
-        description: _(msg`An unknown error occurred while creating the folder.`),
+        title: 'Erreur lors de la création du dossier',
+        description: _(msg`Une erreur inconnue est survenue lors de la création du dossier.`),
         variant: 'destructive',
       });
     }
@@ -115,16 +115,17 @@ export const CreateFolderDialog = ({ trigger, ...props }: CreateFolderDialogProp
         {trigger ?? (
           <Button variant="outline" className="flex items-center space-x-2">
             <FolderPlusIcon className="h-4 w-4" />
-            <span>Create Folder</span>
+            <span>Créer un dossier</span>
           </Button>
         )}
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create New Folder</DialogTitle>
+          <DialogTitle>Créer un nouveau dossier.</DialogTitle>
           <DialogDescription>
-            Enter a name for your new folder. Folders help you organize your documents.
+            Entrez un nom pour votre nouveau dossier. Les dossiers vous aident à organiser vos
+            documents.
           </DialogDescription>
         </DialogHeader>
 
@@ -135,9 +136,9 @@ export const CreateFolderDialog = ({ trigger, ...props }: CreateFolderDialogProp
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Folder Name</FormLabel>
+                  <FormLabel>Nom du dossier</FormLabel>
                   <FormControl>
-                    <Input placeholder="My Folder" {...field} />
+                    <Input placeholder="Mon dossier" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -150,10 +151,10 @@ export const CreateFolderDialog = ({ trigger, ...props }: CreateFolderDialogProp
                 variant="secondary"
                 onClick={() => setIsCreateFolderOpen(false)}
               >
-                Cancel
+                Annuler
               </Button>
 
-              <Button type="submit">Create</Button>
+              <Button type="submit">Créer</Button>
             </DialogFooter>
           </form>
         </Form>
