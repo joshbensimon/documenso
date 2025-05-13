@@ -85,7 +85,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   return data(
     {
       lang,
-      theme: getTheme(),
+      theme: 'light',
       session: session.isAuthenticated
         ? {
             user: session.user,
@@ -104,8 +104,6 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { theme } = useLoaderData<typeof loader>() || {};
-
   const location = useLocation();
 
   useEffect(() => {
@@ -115,7 +113,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   }, [location.pathname]);
 
   return (
-    <ThemeProvider specifiedTheme={theme} themeAction="/api/theme">
+    <ThemeProvider specifiedTheme="light" themeAction="/api/theme">
       <LayoutContent>{children}</LayoutContent>
     </ThemeProvider>
   );
@@ -124,10 +122,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export function LayoutContent({ children }: { children: React.ReactNode }) {
   const { publicEnv, session, lang, ...data } = useLoaderData<typeof loader>() || {};
 
-  const [theme] = useTheme();
-
+  // Force light theme regardless of what useTheme returns
   return (
-    <html translate="no" lang={lang} data-theme={theme} className={theme ?? ''}>
+    <html translate="no" lang={lang} data-theme="light" className="light">
       <head>
         <meta charSet="utf-8" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
