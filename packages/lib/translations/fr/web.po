@@ -6567,7 +6567,7 @@ msgstr "Importer un document personnalisé"
 #: apps/remix/app/components/embed/authoring/configure-document-upload.tsx
 #: packages/ui/primitives/document-upload.tsx
 msgid "Upload Document"
-msgstr ""
+msgstr "Importer un document"
 
 #: packages/ui/primitives/signature-pad/signature-pad-upload.tsx
 msgid "Upload Signature"
