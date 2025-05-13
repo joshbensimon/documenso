@@ -38,12 +38,6 @@ export const TemplateDocumentInvite = ({
 
   const { actionVerb } = RECIPIENT_ROLES_DESCRIPTION[role];
 
-  const rejectDocumentLink = useMemo(() => {
-    const url = new URL(signDocumentLink);
-    url.searchParams.set('reject', 'true');
-    return url.toString();
-  }, [signDocumentLink]);
-
   return (
     <>
       <TemplateDocumentImage className="mt-6" assetBaseUrl={assetBaseUrl} />
@@ -91,13 +85,6 @@ export const TemplateDocumentInvite = ({
         </Text>
 
         <Section className="mb-6 mt-8 text-center">
-          <Button
-            className="mr-4 inline-flex items-center justify-center rounded-lg bg-red-500 px-6 py-3 text-center text-sm font-medium text-black no-underline"
-            href={rejectDocumentLink}
-          >
-            <Trans>Reject Document</Trans>
-          </Button>
-
           <Button
             className="bg-documenso-500 inline-flex items-center justify-center rounded-lg px-6 py-3 text-center text-sm font-medium text-black no-underline"
             href={signDocumentLink}
