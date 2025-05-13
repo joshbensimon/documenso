@@ -20,8 +20,8 @@ export type I18nLocaleData = {
 
 export const APP_I18N_OPTIONS = {
   supportedLangs: SUPPORTED_LANGUAGE_CODES,
-  sourceLang: 'fr',
-  defaultLocale: 'fr-FR',
+  sourceLang: 'en',
+  defaultLocale: 'en-US',
 } as const;
 
 type SupportedLanguage = {
