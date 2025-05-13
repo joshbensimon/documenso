@@ -12,7 +12,7 @@ export const DocumentSigningFieldsLoader = () => {
 
 export const DocumentSigningFieldsUninserted = ({ children }: { children: React.ReactNode }) => {
   return (
-    <p className="group-hover:text-primary text-foreground group-hover:text-recipient-green text-[clamp(0.425rem,12cqw,0.825rem)] break-words overflow-visible duration-200">
+    <p className="group-hover:text-primary text-foreground group-hover:text-recipient-green text-[0.45rem] sm:text-[0.55rem] break-words overflow-visible duration-200">
       {children}
     </p>
   );
@@ -37,7 +37,7 @@ export const DocumentSigningFieldsInserted = ({
     <div className="flex h-full w-full items-center overflow-visible">
       <p
         className={cn(
-          'text-foreground w-full text-left text-[clamp(0.425rem,12cqw,0.825rem)] break-words whitespace-normal overflow-visible duration-200',
+          'text-foreground w-full text-left text-[0.45rem] sm:text-[0.55rem] break-words whitespace-normal overflow-visible duration-200 max-w-full',
           {
             '!text-center': textAlign === 'center',
             '!text-right': textAlign === 'right',
