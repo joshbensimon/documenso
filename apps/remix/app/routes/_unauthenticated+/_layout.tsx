@@ -1,21 +1,27 @@
 import { Outlet } from 'react-router';
 
-import backgroundPattern from '@documenso/assets/images/background-pattern.png';
-
 export default function Layout() {
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-12 md:p-12 lg:p-24">
       <div>
-        <div className="absolute -inset-[min(600px,max(400px,60vw))] -z-[1] flex items-center justify-center opacity-70">
-          <img
-            src={backgroundPattern}
-            alt="background pattern"
-            className="dark:brightness-95 dark:contrast-[70%] dark:invert dark:sepia"
-            style={{
-              mask: 'radial-gradient(rgba(255, 255, 255, 1) 0%, transparent 80%)',
-              WebkitMask: 'radial-gradient(rgba(255, 255, 255, 1) 0%, transparent 80%)',
-            }}
-          />
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+          {/* Video background */}
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            className="absolute h-full w-full object-cover"
+          >
+            <source src="https://diploma-sante.fr/app/uploads/2025/05/VF_VIDEO_HOMEPAGE_HORIZONTALE.mp4" type="video/mp4" />
+          </video>
+          
+          {/* Background overlay */}
+          <div className="absolute inset-0 has-background-color has-background-dim bg-white text-dark has-background-dim-80"></div>
+          
+          {/* SVG overlay */}
+          <svg className="svg-hero pointer-events-none absolute z-10 -top-[5rem] left-1/4 -rotate-[15deg]" width="2302" height="3119" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path opacity=".7" d="M2176.4 35.839c-56.7-35.977-123.43-43.854-186.08-24.724-62.65 19.13-114.17 64.723-145.68 126.994l-57.75 115.028c-46.19 92.03-120.08 157.558-210.57 185.332-29.01 8.734-60.63 13.77-92.49 14.925l-4.71.351c-40.53-.902-80.64-9.25-118.67-24.698-18.23-7.697-35.28-15.497-51.33-25.97L933.509 169.166l-40.647-25.503C603.425-37.022 236.919 77.033 76.349 397.717c-77.72 154.3-95.866 333.935-51.88 504.887 43.986 170.956 145.338 314.066 285.685 400.856l645.312 401.81 374.354 232.71 229.05 142.4c83.74 52.11 143.56 137.28 168.98 239.4 25.1 99.21 13.56 205.3-32.09 295.2-46.19 92.03-120.09 157.56-210.59 185.33-56.84 17.38-115.86 19.33-172.41 4.15-32.44-7.91-64.03-21.09-93.67-40.93l-208.13-129.71c-13.537-8.06-27.058-16.13-40.497-22.89-59.625-31.55-123.7-51.7-189.477-59.58l-3.54.27c-2.348.18-5.876.44-8.318-.66-72.622-7.43-145.432.78-215.057 21.74-154.246 48.29-282.004 159.59-359.64 315.19L66.945 3114.96c2.348-.18 1.25 1.21 3.693 2.32 2.513 2.4 7.056-.54 8.236-.63l127.498-227.09c43.997-89.25 119.073-154.87 209.57-182.64 90.485-27.78 184.781-14.21 266.004 35.48l293.13 183.01 123.134 76.4c28.3 17.34 57.62 32 88.04 45.27 39.27 16.14 80.05 27.4 121.59 33.58 241.46 39.97 484.08-87.97 606.88-332.9 77.72-154.3 95.87-333.93 51.89-504.89-43.98-170.95-145.35-314.07-285.69-400.85l-343.61-214.26-385.442-239.66-519.75-324.3c-82.473-50.91-142.211-134.785-167.543-235.615-26.594-102.036-15.61-208.265 30.665-298.984 46.193-92.017 120.089-157.558 210.574-185.332 90.497-27.774 184.793-14.211 266.016 35.483l166.221 103.01 416.259 259.4 41.83 25.412a609.213 609.213 0 0 0 55.2 30.875c284.28 136.858 611.2 14.134 761.31-284.928l57.75-115.028c31.52-62.271 38.77-134.392 21.38-203.307-17.4-68.916-58.93-126.865-115.63-162.84l.25 3.893Z" stroke="#CCAC71" stroke-width=".5"></path>
+          </svg>
         </div>
 
         <div className="relative w-full">
