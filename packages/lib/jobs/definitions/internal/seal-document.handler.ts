@@ -144,8 +144,19 @@ export const run = async ({
 
   const pdfData = await getFileServerSide(documentData);
 
+  // Separate signature fields from non-signature fields
+  const signatureFields = fields.filter(field => 
+    field.type === FieldType.SIGNATURE || field.type === FieldType.FREE_SIGNATURE
+  );
+  
+  const nonSignatureFields = fields.filter(field => 
+    field.type !== FieldType.SIGNATURE && field.type !== FieldType.FREE_SIGNATURE
+  );
+
+  const hasSignatureField = signatureFields.length > 0;
+
   const certificateData =
-    (document.team?.teamGlobalSettings?.includeSigningCertificate ?? true)
+    (hasSignatureField && (document.team?.teamGlobalSettings?.includeSigningCertificate ?? true))
       ? await getCertificatePdf({
           documentId,
           language: document.documentMeta?.language,
@@ -165,24 +176,65 @@ export const run = async ({
       await addRejectionStampToPdf(pdfDoc, rejectionReason);
     }
 
-    if (certificateData) {
-      const certificateDoc = await PDFDocument.load(certificateData);
+    // For non-signature fields, draw them directly on the PDF as text instead of using fields
+    for (const field of nonSignatureFields) {
+      if (!field.inserted) {
+        continue;
+      }
+      
+      const pages = pdfDoc.getPages();
+      const page = pages.at(field.page - 1);
+      
+      if (!page) {
+        continue;
+      }
+      
+      const pageWidth = page.getWidth();
+      const pageHeight = page.getHeight();
+      
+      const fieldWidth = pageWidth * (Number(field.width) / 100);
+      const fieldHeight = pageHeight * (Number(field.height) / 100);
+      
+      const fieldX = pageWidth * (Number(field.positionX) / 100);
+      const fieldY = pageHeight * (Number(field.positionY) / 100);
+      
+      // Invert the Y axis since PDFs use a bottom-left coordinate system
+      const invertedY = pageHeight - fieldY - fieldHeight;
+      
+      // Draw the text directly on the PDF
+      const fontSize = 11; // Set an appropriate font size
+      const font = await pdfDoc.embedFont("Helvetica");
 
-      const certificatePages = await pdfDoc.copyPages(
-        certificateDoc,
-        certificateDoc.getPageIndices(),
-      );
-
-      certificatePages.forEach((page) => {
-        pdfDoc.addPage(page);
-      });
+      if (field.customText) {
+        page.drawText(field.customText, {
+          x: fieldX + 2, // Small padding
+          y: invertedY + fieldHeight/2 - fontSize/2, // Center text vertically
+          size: fontSize,
+          font,
+        });
+      }
     }
 
-    for (const field of fields) {
-      if (field.inserted) {
-        document.useLegacyFieldInsertion
-          ? await legacy_insertFieldInPDF(pdfDoc, field)
-          : await insertFieldInPDF(pdfDoc, field);
+    // If we have signature fields, add the certificate and process the signature fields
+    if (hasSignatureField) {
+      if (certificateData) {
+        const certificateDoc = await PDFDocument.load(certificateData);
+        const certificatePages = await pdfDoc.copyPages(
+          certificateDoc,
+          certificateDoc.getPageIndices(),
+        );
+        certificatePages.forEach((page) => {
+          pdfDoc.addPage(page);
+        });
+      }
+
+      // Process signature fields using the proper field mechanism
+      for (const field of signatureFields) {
+        if (field.inserted) {
+          document.useLegacyFieldInsertion
+            ? await legacy_insertFieldInPDF(pdfDoc, field)
+            : await insertFieldInPDF(pdfDoc, field);
+        }
       }
     }
 

@@ -116,8 +116,19 @@ export const sealDocument = async ({
   // !: Need to write the fields onto the document as a hard copy
   const pdfData = await getFileServerSide(documentData);
 
+  // Separate signature fields from non-signature fields
+  const signatureFields = fields.filter(field => 
+    field.type === FieldType.SIGNATURE || field.type === FieldType.FREE_SIGNATURE
+  );
+  
+  const nonSignatureFields = fields.filter(field => 
+    field.type !== FieldType.SIGNATURE && field.type !== FieldType.FREE_SIGNATURE
+  );
+
+  const hasSignatureField = signatureFields.length > 0;
+
   const certificateData =
-    (document.team?.teamGlobalSettings?.includeSigningCertificate ?? true)
+    (hasSignatureField && (document.team?.teamGlobalSettings?.includeSigningCertificate ?? true))
       ? await getCertificatePdf({
           documentId,
           language: document.documentMeta?.language,
@@ -136,27 +147,63 @@ export const sealDocument = async ({
     await addRejectionStampToPdf(doc, rejectionReason);
   }
 
-  if (certificateData) {
-    const certificate = await PDFDocument.load(certificateData);
+  // For non-signature fields, draw them directly on the PDF as text instead of using fields
+  for (const field of nonSignatureFields) {
+    const pages = doc.getPages();
+    const page = pages.at(field.page - 1);
+    
+    if (!page) {
+      continue;
+    }
+    
+    const pageWidth = page.getWidth();
+    const pageHeight = page.getHeight();
+    
+    const fieldWidth = pageWidth * (Number(field.width) / 100);
+    const fieldHeight = pageHeight * (Number(field.height) / 100);
+    
+    const fieldX = pageWidth * (Number(field.positionX) / 100);
+    const fieldY = pageHeight * (Number(field.positionY) / 100);
+    
+    // Invert the Y axis since PDFs use a bottom-left coordinate system
+    const invertedY = pageHeight - fieldY - fieldHeight;
+    
+    // Draw the text directly on the PDF
+    const fontSize = 11; // Set an appropriate font size
+    const font = await doc.embedFont("Helvetica");
 
-    const certificatePages = await doc.copyPages(certificate, certificate.getPageIndices());
-
-    certificatePages.forEach((page) => {
-      doc.addPage(page);
-    });
+    if (field.customText) {
+      page.drawText(field.customText, {
+        x: fieldX + 2, // Small padding
+        y: invertedY + fieldHeight/2 - fontSize/2, // Center text vertically
+        size: fontSize,
+        font,
+      });
+    }
   }
 
-  for (const field of fields) {
-    document.useLegacyFieldInsertion
-      ? await legacy_insertFieldInPDF(doc, field)
-      : await insertFieldInPDF(doc, field);
+  // If we have signature fields, add the certificate and process the signature fields
+  if (hasSignatureField) {
+    if (certificateData) {
+      const certificate = await PDFDocument.load(certificateData);
+      const certificatePages = await doc.copyPages(certificate, certificate.getPageIndices());
+      certificatePages.forEach((page) => {
+        doc.addPage(page);
+      });
+    }
+
+    // Process signature fields using the proper field mechanism
+    for (const field of signatureFields) {
+      document.useLegacyFieldInsertion
+        ? await legacy_insertFieldInPDF(doc, field)
+        : await insertFieldInPDF(doc, field);
+    }
   }
 
   // Re-flatten post-insertion to handle fields that create arcoFields
   flattenForm(doc);
 
   const pdfBytes = await doc.save();
-
   const pdfBuffer = await signPdf({ pdf: Buffer.from(pdfBytes) });
 
   const { name } = path.parse(document.title);
