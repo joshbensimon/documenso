@@ -1,4 +1,4 @@
-import { DocumentStatus, RecipientRole, SigningStatus, WebhookTriggerEvents } from '@prisma/client';
+import { DocumentStatus, FieldType, RecipientRole, SigningStatus, WebhookTriggerEvents } from '@prisma/client';
 import { nanoid } from 'nanoid';
 import path from 'node:path';
 import { PDFDocument } from 'pdf-lib';
